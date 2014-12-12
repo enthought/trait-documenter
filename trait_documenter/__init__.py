@@ -25,5 +25,8 @@ def setup(app):
     """ Add the TraitDocumenter in the current sphinx autodoc instance.
 
     """
-    from trait_documenter.trait_documenter import TraitDocumenter
-    app.add_autodocumenter(TraitDocumenter)
+    from trait_documenter.class_trait_documenter import ClassTraitDocumenter
+    from trait_documenter.module_trait_documenter import ModuleTraitDocumenter
+
+    app.add_autodocumenter(ModuleTraitDocumenter)
+    app.add_autodocumenter(ClassTraitDocumenter)

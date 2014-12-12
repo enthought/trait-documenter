@@ -19,31 +19,16 @@ import sys
 import inspect
 from _ast import ClassDef, Assign
 
-from sphinx.ext.autodoc import ClassLevelDocumenter
+from sphinx.ext.autodoc import ModuleLevelDocumenter
 
-from traits.has_traits import MetaHasTraits
 from traits.trait_handlers import TraitType
 
 
-def is_class_trait(name, cls):
-    """ Check if the name is in the list of class defined traits of ``cls``.
-    """
-    return isinstance(cls, MetaHasTraits) and name in cls.__class_traits__
-
-
-class TraitDocumenter(ClassLevelDocumenter):
-    """ Specialized Documenter subclass for trait attributes.
+class ModuleTraitDocumenter(ModuleLevelDocumenter):
+    """ Specialised Documenter subclass for module traits.
 
     The class defines a new documenter that recovers the trait definition
-    signature of module level and class level traits.
-
-    To use the documenter, append the module path in the extension
-    attribute of the `conf.py`.
-
-    .. warning::
-
-        Using the TraitDocumenter in conjunction with TraitsDoc is not
-        advised.
+    signature of class level traits.
 
     """
 
@@ -58,10 +43,7 @@ class TraitDocumenter(ClassLevelDocumenter):
     def can_document_member(cls, member, membername, isattr, parent):
         """ Check that the documented member is a trait instance.
         """
-        return (
-            isattr and
-            issubclass(type(member), TraitType) or
-            is_class_trait(membername, parent.object))
+        return isattr and issubclass(type(member), TraitType)
 
     def document_members(self, all_members=False):
         # Trait attributes have no members """
@@ -69,10 +51,10 @@ class TraitDocumenter(ClassLevelDocumenter):
 
     def add_content(self, more_content, no_docstring=False):
         # Never try to get a docstring from the trait object.
-        ClassLevelDocumenter.add_content(
+        ModuleLevelDocumenter.add_content(
             self, more_content, no_docstring=True)
 
-    def import_object(self):
+    def _old_import_object(self):
         """ Get the Trait object.
 
         Notes
@@ -111,7 +93,7 @@ class TraitDocumenter(ClassLevelDocumenter):
         set to the trait definition.
 
         """
-        ClassLevelDocumenter.add_directive_header(self, sig)
+        ModuleLevelDocumenter.add_directive_header(self, sig)
         definition = self.get_trait_definition()
         self.add_line(
             '   :annotation: = {0}'.format(definition), '<autodoc>')
@@ -119,24 +101,20 @@ class TraitDocumenter(ClassLevelDocumenter):
     def get_trait_definition(self):
         """ Retrieve the Trait attribute definition
         """
-        # Get the class source and tokenize it.
+        # Get the class source.
         source = inspect.getsource(self.parent)
 
-        nodes = ast.parse(source)
-        for node in ast.iter_child_nodes(nodes):
-            if isinstance(node, ClassDef):
-                parent_node = node
-                break
-        else:
-            return ''
+        print type(self.object), type(self.parent)
 
-        for node in ast.iter_child_nodes(parent_node):
+        # Get the trait definition
+        ast_nodes = ast.parse(source)
+        for node in ast.iter_child_nodes(ast_nodes):
             if isinstance(node, Assign):
                 name = node.targets[0]
                 if name.id == self.object_name:
                     break
         else:
-            return ''
+            raise RuntimeError('Could not find trait definition')
 
         endlineno = name.lineno
         for item in ast.walk(node):
