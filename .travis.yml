@@ -1,17 +1,13 @@
 language: python
-matrix:
-  include:
-    - python: "2.6"
-      env: REQUIREMENTS=test-requirements.txt
-    - python: "2.7"
-      env: REQUIREMENTS=test-requirements.txt
-    - python: "3.3"
-      env: REQUIREMENTS=test-requirements.txt
-    - python: "3.4"
-      env: REQUIREMENTS=test-requirements.txt
+sudo = False
+python:
+  2.6
+  2.7
+  3.3
+  3.4
 before_install:
   - pip install cython
-  - pip install -r $REQUIREMENTS
+  - pip install -r requirements
 install:
   - python setup.py develop
 script:
