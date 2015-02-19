@@ -22,7 +22,6 @@ from _ast import ClassDef, Assign
 from sphinx.ext.autodoc import ClassLevelDocumenter
 
 from traits.has_traits import MetaHasTraits
-from traits.trait_handlers import TraitType
 
 
 class ClassTraitDocumenter(ClassLevelDocumenter):
@@ -46,6 +45,7 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
         """
         obj = parent.object
         return (
+            isattr and
             isinstance(obj, MetaHasTraits) and
             membername in obj.__class_traits__)
 
@@ -59,7 +59,7 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
             self, more_content, no_docstring=True)
 
     def import_object(self):
-        """ Get the Trait object.
+        """ Setup the necessary info for documenting the trait definition.
 
         Notes
         -----
@@ -80,7 +80,7 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
                 dbg('[autodoc] => %r', parent)
             name = self.objpath[-1]
             self.object_name = name
-            self.object = None
+            self.object = None  # We do have a trait object
             self.parent = parent
             return True
         # this used to only catch SyntaxError, ImportError and AttributeError,
@@ -121,9 +121,7 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
         # Get the class source.
         source = inspect.getsource(self.parent)
 
-        print type(self.object), type(self.parent)
-
-        # Get the class definition
+        # Get the HasTraits class definition
         nodes = ast.parse(source)
         for node in ast.iter_child_nodes(nodes):
             if isinstance(node, ClassDef):
