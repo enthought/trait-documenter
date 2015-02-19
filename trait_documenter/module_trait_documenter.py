@@ -14,14 +14,10 @@
 from __future__ import unicode_literals
 
 import ast
-import traceback
-import sys
 import inspect
-from _ast import ClassDef, Assign
+from _ast import Assign
 
-from sphinx.ext.autodoc import ModuleLevelDocumenter
-
-from traits.trait_handlers import TraitType
+from sphinx.ext.autodoc import ModuleDocumenter, ModuleLevelDocumenter
 
 
 class ModuleTraitDocumenter(ModuleLevelDocumenter):
@@ -43,48 +39,30 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
     def can_document_member(cls, member, membername, isattr, parent):
         """ Check that the documented member is a trait instance.
         """
-        return isattr and issubclass(type(member), TraitType)
+        return (
+            isattr and
+            hasattr(member, 'as_ctrait') and
+            not isinstance(parent, ModuleDocumenter))
 
     def document_members(self, all_members=False):
         # Trait attributes have no members """
         pass
 
-    def add_content(self, more_content, no_docstring=False):
-        # Never try to get a docstring from the trait object.
-        ModuleLevelDocumenter.add_content(
-            self, more_content, no_docstring=True)
-
-    def _old_import_object(self):
-        """ Get the Trait object.
+    def import_object(self):
+        """ Setup the necessary info for documenting the trait definition.
 
         Notes
         -----
         Code adapted from autodoc.Documenter.import_object.
 
         """
-        try:
-            __import__(self.modname)
-            current = self.module = sys.modules[self.modname]
-            for part in self.objpath[:-1]:
-                current = self.get_attr(current, part)
-            name = self.objpath[-1]
-            self.object_name = name
-            self.object = None
-            self.parent = current
-            return True
-        # this used to only catch SyntaxError, ImportError and
-        # AttributeError, but importing modules with side effects can raise
-        # all kinds of errors.
-        except Exception as err:
-            if self.env.app and not self.env.app.quiet:
-                self.env.app.info(traceback.format_exc().rstrip())
-            msg = (
-                'autodoc can\'t import/find {0} {r1}, it reported error: '
-                '"{2}", please check your spelling and sys.path')
-            self.directive.warn(msg.format(
-                self.objtype, str(self.fullname), err))
-            self.env.note_reread()
-            return False
+        import pdb; pdb.set_trace()
+        ModuleLevelDocumenter.import_object(self)
+
+    def add_content(self, more_content, no_docstring=False):
+        # Never try to get a docstring from the trait object.
+        ModuleLevelDocumenter.add_content(
+            self, more_content, no_docstring=True)
 
     def add_directive_header(self, sig):
         """ Add the sphinx directives.
@@ -103,8 +81,6 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
         """
         # Get the class source.
         source = inspect.getsource(self.parent)
-
-        print type(self.object), type(self.parent)
 
         # Get the trait definition
         ast_nodes = ast.parse(source)
