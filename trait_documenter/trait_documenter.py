@@ -58,6 +58,10 @@ class TraitDocumenter(ClassLevelDocumenter):
     def can_document_member(cls, member, membername, isattr, parent):
         """ Check that the documented member is a trait instance.
         """
+        print cls, member, membername, isattr, parent
+        print isattr, issubclass(type(member), TraitType), is_class_trait(membername, parent.object)
+        print
+
         return (
             isattr and
             issubclass(type(member), TraitType) or
