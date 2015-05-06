@@ -48,7 +48,7 @@ def git_version():
     return git_revision, git_count
 
 
-def write_version_py(filename='traits/_version.py'):
+def write_version_py(filename='trait_documenter/_version.py'):
     template = """\
 # THIS FILE IS GENERATED FROM TRAIT-DOCUMENTER SETUP.PY
 version = '{version}'
@@ -60,16 +60,16 @@ if not is_released:
     version = full_version
 """
     # Adding the git rev number needs to be done inside
-    # write_version_py(), otherwise the import of traits._version messes
+    # write_version_py(), otherwise the import of traits_documenter._version messes
     # up the build under Python 3.
     fullversion = VERSION
     if os.path.exists('.git'):
         git_rev, dev_num = git_version()
-    elif os.path.exists('trait-documenter/_version.py'):
+    elif os.path.exists('trait_documenter/_version.py'):
         # must be a source distribution, use existing version file
         try:
-            from traits._version import git_revision as git_rev
-            from traits._version import full_version as full_v
+            from traits_documenter._version import git_revision as git_rev
+            from traits_documenter._version import full_version as full_v
         except ImportError:
             raise ImportError(
                 "Unable to import git_revision. Try removing "
