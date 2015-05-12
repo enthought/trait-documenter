@@ -4,7 +4,7 @@ python:
   - "2.6"
   - "2.7"
   - "3.4"
- env:
+env:
   - SPHINX="sphinx==1.2.3"
   - SPHINX="sphinx"
 before_install:
