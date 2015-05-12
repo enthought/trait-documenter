@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 #
 #  Copyright (c) 2014, Enthought, Inc.
 #  All rights reserved.
@@ -10,18 +10,16 @@
 #
 #  Thanks for using Enthought open source!
 #
-#----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 from __future__ import unicode_literals
 
-import ast
-import traceback
 import sys
-import inspect
-from _ast import ClassDef, Assign
+import traceback
 
 from sphinx.ext.autodoc import ClassLevelDocumenter
-
 from traits.has_traits import MetaHasTraits
+
+from .util import get_trait_definition
 
 
 class ClassTraitDocumenter(ClassLevelDocumenter):
@@ -111,43 +109,6 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
 
         """
         ClassLevelDocumenter.add_directive_header(self, sig)
-        definition = self.get_trait_definition()
+        definition = get_trait_definition(self.parent, self.object_name)
         self.add_line(
             '   :annotation: = {0}'.format(definition), '<autodoc>')
-
-    def get_trait_definition(self):
-        """ Retrieve the Trait attribute definition
-        """
-        # Get the class source.
-        source = inspect.getsource(self.parent)
-
-        # Get the HasTraits class definition
-        nodes = ast.parse(source)
-        for node in ast.iter_child_nodes(nodes):
-            if isinstance(node, ClassDef):
-                parent_node = node
-                break
-        else:
-            message = 'Could not find container class definition {} for {}'
-            raise RuntimeError(message.format(self.parent, self.object_name))
-
-        # Get the trait definition
-        for node in ast.iter_child_nodes(parent_node):
-            if isinstance(node, Assign):
-                name = node.targets[0]
-                if name.id == self.object_name:
-                    break
-        else:
-            raise RuntimeError('Could not find trait definition')
-
-        endlineno = name.lineno
-        for item in ast.walk(node):
-            if hasattr(item, 'lineno'):
-                endlineno = max(endlineno, item.lineno)
-
-        definition_lines = [
-            line.strip()
-            for line in source.splitlines()[name.lineno-1:endlineno]]
-        definition = ''.join(definition_lines)
-        equal = definition.index('=')
-        return definition[equal + 1:].lstrip()

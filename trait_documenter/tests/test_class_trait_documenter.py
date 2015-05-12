@@ -35,20 +35,6 @@ class TestClassTraitDocumenter(unittest.TestCase):
             can_document_member(
                 Dummy.not_trait, 'not_trait', False, parent))
 
-    def test_get_simple_trait_definition(self):
-        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
-        documenter.parent = Dummy
-        documenter.object_name = 'trait_1'
-        definition = documenter.get_trait_definition()
-        self.assertEqual(definition, 'Float')
-
-    def test_get_multi_line_trait_definition(self):
-        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
-        documenter.parent = Dummy
-        documenter.object_name = 'trait_2'
-        definition = documenter.get_trait_definition()
-        self.assertEqual(definition, "Property(Float,depends_on='trait_1')")
-
     def test_import_object(self):
         # given
         documenter = ClassTraitDocumenter(mock.Mock(), 'test')

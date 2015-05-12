@@ -32,20 +32,6 @@ class TestModuleTraitDocumenter(unittest.TestCase):
             can_document_member(
                 Dummy.class_traits()['trait_1'], 'trait_1', False, parent))
 
-    def test_get_simple_trait_definition(self):
-        documenter = ModuleTraitDocumenter(mock.Mock(), 'test')
-        documenter.parent = test_file
-        documenter.object_name = 'module_trait'
-        definition = documenter.get_trait_definition()
-        self.assertEqual(definition, 'Float')
-
-    def test_get_multi_line_trait_definition(self):
-        documenter = ModuleTraitDocumenter(mock.Mock(), 'test')
-        documenter.parent = test_file
-        documenter.object_name = 'long_module_trait'
-        definition = documenter.get_trait_definition()
-        self.assertEqual(definition, "Range(low=0.2,high=34)")
-
     def test_import_object(self):
         # given
         documenter = ModuleTraitDocumenter(mock.Mock(), 'test')

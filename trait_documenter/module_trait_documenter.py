@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 #
 #  Copyright (c) 2014, Enthought, Inc.
 #  All rights reserved.
@@ -10,15 +10,13 @@
 #
 #  Thanks for using Enthought open source!
 #
-#----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 from __future__ import unicode_literals
-
-import ast
-import inspect
-from _ast import Assign
 
 from sphinx.ext.autodoc import (
     ModuleDocumenter, ModuleLevelDocumenter, SUPPRESS)
+
+from .util import get_trait_definition
 
 
 class ModuleTraitDocumenter(ModuleLevelDocumenter):
@@ -29,12 +27,12 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
 
     """
 
-    objtype = 'traitattribute'
+    objtype = 'trait'
     directivetype = 'attribute'
     member_order = 60
 
-    # must be higher than other attribute documenters
-    priority = 12
+    # must be higher than other data documenters
+    priority = -5
 
     @classmethod
     def can_document_member(cls, member, membername, isattr, parent):
@@ -43,7 +41,7 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
         return (
             isattr and
             hasattr(member, 'as_ctrait') and
-            not isinstance(parent, ModuleDocumenter))
+            isinstance(parent, ModuleDocumenter))
 
     def document_members(self, all_members=False):
         # Trait attributes have no members """
@@ -74,39 +72,11 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
         """
         ModuleLevelDocumenter.add_directive_header(self, sig)
         if not self.options.annotation:
-            definition = self.get_trait_definition()
+            definition = get_trait_definition(self.parent, self.object_name)
             self.add_line(
-                u'   :annotation: = {0}'.format(definition), '<autodoc>')
+                '   :annotation: = {0}'.format(definition), '<autodoc>')
         elif self.options.annotation is SUPPRESS:
             pass
         else:
             self.add_line(
-                u'   :annotation: %s' % self.options.annotation, '<autodoc>')
-
-    def get_trait_definition(self):
-        """ Retrieve the Trait attribute definition
-        """
-        # Get the class source.
-        source = inspect.getsource(self.parent)
-
-        # Get the trait definition
-        ast_nodes = ast.parse(source)
-        for node in ast.iter_child_nodes(ast_nodes):
-            if isinstance(node, Assign):
-                name = node.targets[0]
-                if name.id == self.object_name:
-                    break
-        else:
-            raise RuntimeError('Could not find trait definition')
-
-        endlineno = name.lineno
-        for item in ast.walk(node):
-            if hasattr(item, 'lineno'):
-                endlineno = max(endlineno, item.lineno)
-
-        definition_lines = [
-            line.strip()
-            for line in source.splitlines()[name.lineno-1:endlineno]]
-        definition = ''.join(definition_lines)
-        equal = definition.index('=')
-        return definition[equal + 1:].lstrip()
+                '   :annotation: %s' % self.options.annotation, '<autodoc>')
