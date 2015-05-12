@@ -3,7 +3,7 @@ import inspect
 from _ast import ClassDef, Assign
 
 
-def get_trait_definition(parent, name, container='class_attribute'):
+def get_trait_definition(parent, object_name, container='class_attribute'):
     """ Retrieve the Trait attribute definition
     """
     # Get the class source.
@@ -17,13 +17,13 @@ def get_trait_definition(parent, name, container='class_attribute'):
             break
     else:
         message = 'Could not find parent definition {} for {}'
-        raise RuntimeError(message.format(parent, name))
+        raise RuntimeError(message.format(parent, object_name))
 
     # Get the trait definition
     for node in ast.iter_child_nodes(parent_node):
         if isinstance(node, Assign):
             name = node.targets[0]
-            if name.id == name:
+            if name.id == object_name:
                 break
     else:
         raise RuntimeError('Could not find trait definition')
