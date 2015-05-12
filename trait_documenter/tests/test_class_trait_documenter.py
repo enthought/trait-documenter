@@ -46,7 +46,7 @@ class TestClassTraitDocumenter(unittest.TestCase):
 
         # then
         self.assertEqual(documenter.object_name, u'trait_1')
-        self.assertIsNone(documenter.object)
+        self.assertTrue(documenter.object is None)
         self.assertEqual(documenter.parent, Dummy)
 
     def test_add_directive_header(self):
@@ -69,7 +69,7 @@ class TestClassTraitDocumenter(unittest.TestCase):
             (u"   :annotation: = Property(Float,depends_on='trait_1')", u'<autodoc>')]  # noqa
         calls = documenter.add_line.call_args_list
         for index, call in enumerate(calls):
-            self.assertSequenceEqual(tuple(call)[0], expected[index])
+            self.assertEqual(tuple(call)[0], expected[index])
 
 
 if __name__ == '__main__':
