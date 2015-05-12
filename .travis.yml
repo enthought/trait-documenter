@@ -7,8 +7,9 @@ python:
   - "3.3"
   - "3.4"
 before_install:
-  - pip install cython
-  - pip install -r requirements
+  - pip install -r requierments.txt
+  - pip install -r test_requirements.txt
+  - pip install coveralls
 install:
   - python setup.py develop
 script:
