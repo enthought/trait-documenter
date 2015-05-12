@@ -14,8 +14,7 @@ class TestGetTraitDefinition(unittest.TestCase):
         object_name = 'module_trait'
 
         # when
-        definition = get_trait_definition(
-            parent, object_name, container='module')
+        definition = get_trait_definition(parent, object_name)
 
         # then
         self.assertEqual(definition, 'Float')
@@ -26,8 +25,7 @@ class TestGetTraitDefinition(unittest.TestCase):
         object_name = 'long_module_trait'
 
         # when
-        definition = get_trait_definition(
-            parent, object_name, container='module')
+        definition = get_trait_definition(parent, object_name)
 
         # then
         self.assertEqual(definition, "Range(low=0.2,high=34)")
