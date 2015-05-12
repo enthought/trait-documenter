@@ -3,21 +3,24 @@ import inspect
 from _ast import ClassDef, Assign
 
 
-def get_trait_definition(parent, object_name, container='class_attribute'):
+def get_trait_definition(parent, object_name, container='class'):
     """ Retrieve the Trait attribute definition
     """
     # Get the class source.
     source = inspect.getsource(parent)
-
-    # Get the HasTraits class definition
     nodes = ast.parse(source)
-    for node in ast.iter_child_nodes(nodes):
-        if isinstance(node, ClassDef):
-            parent_node = node
-            break
+
+    if container == 'class':
+        # Get the HasTraits class definition
+        for node in ast.iter_child_nodes(nodes):
+            if isinstance(node, ClassDef):
+                parent_node = node
+                break
+            else:
+                message = 'Could not find class definition {} for {}'
+            raise RuntimeError(message.format(parent, object_name))
     else:
-        message = 'Could not find parent definition {} for {}'
-        raise RuntimeError(message.format(parent, object_name))
+        parent_node = nodes
 
     # Get the trait definition
     for node in ast.iter_child_nodes(parent_node):
