@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import unittest
 
 import mock
+from sphinx.ext.autodoc import ModuleDocumenter
 
 from trait_documenter.module_trait_documenter import ModuleTraitDocumenter
 from trait_documenter.tests import test_file
@@ -12,7 +13,7 @@ class TestModuleTraitDocumenter(unittest.TestCase):
 
     def test_can_document_member(self):
         can_document_member = ModuleTraitDocumenter.can_document_member
-        parent = mock.Mock()
+        parent = ModuleDocumenter(mock.Mock(), 'test')
 
         # modules
         parent.object = test_file
@@ -35,11 +36,8 @@ class TestModuleTraitDocumenter(unittest.TestCase):
     def test_import_object(self):
         # given
         documenter = ModuleTraitDocumenter(mock.Mock(), 'test')
-        value = mock.Mock(
-            return_value=[])
+        value = mock.Mock(return_value=[])
         documenter.env.config.autodoc_mock_imports = value
-        print documenter.env.config.autodoc_mock_imports
-
         documenter.modname = u'trait_documenter.tests.test_file'
         documenter.objpath = [u'long_module_trait']
 
@@ -51,7 +49,7 @@ class TestModuleTraitDocumenter(unittest.TestCase):
         self.assertIsNone(documenter.object)
         self.assertEqual(documenter.parent, test_file)
 
-    def _test_add_directive_header(self):
+    def test_add_directive_header(self):
         # given
         documenter = ModuleTraitDocumenter(mock.Mock(), '_test')
         documenter.parent = Dummy
