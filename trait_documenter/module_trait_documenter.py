@@ -47,17 +47,6 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
         # Trait attributes have no members """
         pass
 
-    def import_object(self):
-        """ Setup the necessary info for documenting the trait definition.
-
-        Notes
-        -----
-        Code adapted from autodoc.Documenter.import_object.
-
-        """
-        import pdb; pdb.set_trace()
-        ModuleLevelDocumenter.import_object(self)
-
     def add_content(self, more_content, no_docstring=False):
         # Never try to get a docstring from the trait object.
         ModuleLevelDocumenter.add_content(
