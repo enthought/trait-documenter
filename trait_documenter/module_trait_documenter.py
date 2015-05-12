@@ -17,7 +17,8 @@ import ast
 import inspect
 from _ast import Assign
 
-from sphinx.ext.autodoc import ModuleDocumenter, ModuleLevelDocumenter
+from sphinx.ext.autodoc import (
+    ModuleDocumenter, ModuleLevelDocumenter, SUPPRESS)
 
 
 class ModuleTraitDocumenter(ModuleLevelDocumenter):
@@ -72,9 +73,15 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
 
         """
         ModuleLevelDocumenter.add_directive_header(self, sig)
-        definition = self.get_trait_definition()
-        self.add_line(
-            '   :annotation: = {0}'.format(definition), '<autodoc>')
+        if not self.options.annotation:
+            definition = self.get_trait_definition()
+            self.add_line(
+                u'   :annotation: = {0}'.format(definition), '<autodoc>')
+        elif self.options.annotation is SUPPRESS:
+            pass
+        else:
+            self.add_line(
+                u'   :annotation: %s' % self.options.annotation, '<autodoc>')
 
     def get_trait_definition(self):
         """ Retrieve the Trait attribute definition
