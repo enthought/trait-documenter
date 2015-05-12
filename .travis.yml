@@ -11,6 +11,6 @@ before_install:
 install:
   - python setup.py develop
 script:
-  - coverage run -m haas
+  - coverage run -m unittest2 discover
 after_success:
   - coveralls
