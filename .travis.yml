@@ -11,10 +11,11 @@ matrix:
       env: REQUIREMENTS=test-requirements.txt
 before_install:
   - pip install cython
+  - pip install codecov
   - pip install -r $REQUIREMENTS
 install:
   - python setup.py develop
 script:
   - coverage run -m haas
 after_success:
-  - coveralls
+  - codecov
