@@ -10,11 +10,11 @@ env:
 before_install:
   - pip install traits
   - pip install $SPHINX
+  - pip install codecov
   - pip install -r test-requirements.txt
-  - pip install coveralls
 install:
   - python setup.py develop
 script:
   - coverage run -m unittest2 discover
 after_success:
-  - coveralls
+  - codecov
