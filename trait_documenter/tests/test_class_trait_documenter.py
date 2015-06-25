@@ -55,6 +55,7 @@ class TestClassTraitDocumenter(unittest.TestCase):
         documenter.parent = Dummy
         documenter.object_name = u'trait_2'
         documenter.modname = u'trait_documenter.tests.test_file'
+        documenter.get_sourcename = mock.Mock(return_value='<autodoc>')
         documenter.objpath = [u'Dummy', u'trait_2']
         documenter.add_line = mock.Mock()
 

@@ -33,7 +33,9 @@ class TestModuleTraitDocumenter(unittest.TestCase):
     def test_import_object(self):
         # given
         documenter = ModuleTraitDocumenter(mock.Mock(), u'test')
+        documenter.env.config = mock.Mock(autodoc_mock_imports=[])
         documenter.modname = u'trait_documenter.tests.test_file'
+        documenter.fullname = u'trait_documenter.tests.test_file.long_module_trait'  # noqa
         documenter.objpath = [u'long_module_trait']
 
         # when
@@ -50,6 +52,7 @@ class TestModuleTraitDocumenter(unittest.TestCase):
         documenter.parent = test_file
         documenter.options = mock.Mock(annotation=False)
         documenter.modname = u'trait_documenter.tests.test_file'
+        documenter.get_sourcename = mock.Mock(return_value='<autodoc>')
         documenter.object_name = u'long_module_trait'
         documenter.objpath = [u'long_module_trait']
         documenter.add_line = mock.Mock()
