@@ -14,22 +14,22 @@
 from __future__ import unicode_literals
 
 from sphinx.ext.autodoc import (
-    ModuleDocumenter, ModuleLevelDocumenter, SUPPRESS)
+    ModuleLevelDocumenter, ModuleDocumenter, annotation_option, SUPPRESS)
 
 from .util import get_trait_definition
 
 
 class ModuleTraitDocumenter(ModuleLevelDocumenter):
-    """ Specialised Documenter subclass for module traits.
+    """ Specialised Documenter subclass for module level traits.
 
     The class defines a new documenter that recovers the trait definition
     signature of class level traits.
 
     """
-
-    objtype = 'trait'
-    directivetype = 'attribute'
-    member_order = 60
+    objtype = 'data'
+    member_order = 40
+    option_spec = dict(ModuleLevelDocumenter.option_spec)
+    option_spec["annotation"] = annotation_option
 
     # must be higher than other data documenters
     priority = -5
@@ -49,8 +49,7 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
 
     def add_content(self, more_content, no_docstring=False):
         # Never try to get a docstring from the trait object.
-        ModuleLevelDocumenter.add_content(
-            self, more_content, no_docstring=True)
+        ModuleLevelDocumenter.add_content(self, more_content, no_docstring=True)
 
     def add_directive_header(self, sig):
         """ Add the sphinx directives.
