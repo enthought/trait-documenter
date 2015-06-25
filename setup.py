@@ -1,14 +1,17 @@
+import os
+import re
+import subprocess
+
 from setuptools import setup, find_packages
 
-import os
-import subprocess
 
 MAJOR = 1
 MINOR = 0
 MICRO = 0
 
-VERSION = '{0:d}.{1:d}.{2:d}'.format(MAJOR, MINOR, MICRO)
 IS_RELEASED = False
+
+VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
 
 # Return the git revision as a string
@@ -30,17 +33,24 @@ def git_version():
         return out
 
     try:
-        out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
-        git_revision = out.strip().decode('ascii')
+        out = _minimal_ext_cmd(['git', 'describe', '--tags'])
     except OSError:
-        git_revision = "Unknown"
+        out = ''
 
-    return git_revision
+    git_description = out.strip().decode('ascii')
+    expr = r'.*?\-(?P<count>\d+)-g(?P<hash>[a-fA-F0-9]+)'
+    match = re.match(expr, git_description)
+    if match is None:
+        git_revision, git_count = 'Unknown', '0'
+    else:
+        git_revision, git_count = match.group('hash'), match.group('count')
+
+    return git_revision, git_count
 
 
 def write_version_py(filename='trait_documenter/_version.py'):
     template = """\
-# THIS FILE IS GENERATED FROM TRAIT_DOCUMENTER SETUP.PY
+# THIS FILE IS GENERATED FROM TRAIT-DOCUMENTER SETUP.PY
 version = '{version}'
 full_version = '{full_version}'
 git_revision = '{git_revision}'
@@ -50,24 +60,33 @@ if not is_released:
     version = full_version
 """
     # Adding the git rev number needs to be done inside
-    # write_version_py(), otherwise the import of trait_documenter._version
-    # messes up the build under Python 3.
+    # write_version_py(), otherwise the import of traits_documenter._version messes
+    # up the build under Python 3.
     fullversion = VERSION
     if os.path.exists('.git'):
-        git_rev = git_version()
+        git_rev, dev_num = git_version()
     elif os.path.exists('trait_documenter/_version.py'):
         # must be a source distribution, use existing version file
         try:
-            from trait_documenter._version import git_revision as git_rev
+            from traits_documenter._version import git_revision as git_rev
+            from traits_documenter._version import full_version as full_v
         except ImportError:
-            raise ImportError("Unable to import git_revision. Try removing "
-                              "trait_documenter/_version.py and the build "
-                              "directory before building.")
+            raise ImportError(
+                "Unable to import git_revision. Try removing "
+                "trait-documenter/_version.py and the build directory "
+                "before building.")
+
+        match = re.match(r'.*?\.dev(?P<dev_num>\d+)', full_v)
+        if match is None:
+            dev_num = '0'
+        else:
+            dev_num = match.group('dev_num')
     else:
-        git_rev = "Unknown"
+        git_rev = 'Unknown'
+        dev_num = '0'
 
     if not IS_RELEASED:
-        fullversion += '.dev1-' + git_rev[:7]
+        fullversion += '.dev{0}'.format(dev_num)
 
     with open(filename, "wt") as fp:
         fp.write(template.format(version=VERSION,
