@@ -2,6 +2,9 @@ import ast
 import inspect
 from _ast import ClassDef, Assign, Name, If
 
+class DefinitionError(Exception):
+    pass
+
 
 def get_trait_definition(parent, trait_name):
     """ Retrieve the Trait attribute definition from the source file.
@@ -30,9 +33,9 @@ def get_trait_definition(parent, trait_name):
             if isinstance(node, ClassDef):
                 parent_node = node
                 break
-            else:
-                message = 'Could not find class definition {} for {}'
-            raise RuntimeError(message.format(parent, trait_name))
+        else:
+            message = 'Could not find class definition {0} for {1}'
+            raise DefinitionError(message.format(parent, trait_name))
     else:
         parent_node = nodes
 
@@ -47,7 +50,8 @@ def get_trait_definition(parent, trait_name):
         if target is not None:
             break
     else:
-        raise RuntimeError('Could not find trait definition')
+        message = 'Could not find trait definition of {0} in {1}'
+        raise DefinitionError(message.format(trait_name, parent))
 
     name = target
     endlineno = name.lineno

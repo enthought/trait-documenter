@@ -19,7 +19,7 @@ import traceback
 from sphinx.ext.autodoc import ClassLevelDocumenter
 from traits.has_traits import MetaHasTraits
 
-from .util import get_trait_definition
+from .util import get_trait_definition, DefinitionError
 
 
 class ClassTraitDocumenter(ClassLevelDocumenter):
@@ -109,6 +109,10 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
 
         """
         ClassLevelDocumenter.add_directive_header(self, sig)
-        definition = get_trait_definition(self.parent, self.object_name)
-        self.add_line(
-            '   :annotation: = {0}'.format(definition), '<autodoc>')
+        try:
+            definition = get_trait_definition(self.parent, self.object_name)
+        except DefinitionError as error:
+            self.directive.warn(error.args[0])
+        else:
+            self.add_line(
+                '   :annotation: = {0}'.format(definition), '<autodoc>')

@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 from sphinx.ext.autodoc import (
     ModuleLevelDocumenter, ModuleDocumenter, annotation_option, SUPPRESS)
 
-from .util import get_trait_definition
+from .util import get_trait_definition, DefinitionError
 
 
 class ModuleTraitDocumenter(ModuleLevelDocumenter):
@@ -60,7 +60,13 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
         """
         ModuleLevelDocumenter.add_directive_header(self, sig)
         if not self.options.annotation:
-            definition = get_trait_definition(self.parent, self.object_name)
+            try:
+                definition = get_trait_definition(
+                    self.parent, self.object_name)
+            except DefinitionError as error:
+                self.directive.warn(error.args[0])
+                return
+
             self.add_line(
                 '   :annotation: = {0}'.format(definition), '<autodoc>')
         elif self.options.annotation is SUPPRESS:
