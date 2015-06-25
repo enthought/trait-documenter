@@ -59,6 +59,10 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
 
         """
         ModuleLevelDocumenter.add_directive_header(self, sig)
+        if hasattr(self, 'get_sourcename'):
+            sourcename = self.get_sourcename()
+        else:
+            sourcename = u'<autodoc>'
         if not self.options.annotation:
             try:
                 definition = get_trait_definition(
@@ -68,9 +72,9 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
                 return
 
             self.add_line(
-                '   :annotation: = {0}'.format(definition), '<autodoc>')
+                '   :annotation: = {0}'.format(definition), sourcename)
         elif self.options.annotation is SUPPRESS:
             pass
         else:
             self.add_line(
-                '   :annotation: %s' % self.options.annotation, '<autodoc>')
+                '   :annotation: %s' % self.options.annotation, sourcename)

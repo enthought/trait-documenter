@@ -109,10 +109,14 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
 
         """
         ClassLevelDocumenter.add_directive_header(self, sig)
+        if hasattr(self, 'get_sourcename'):
+            sourcename = self.get_sourcename()
+        else:
+            sourcename = u'<autodoc>'
         try:
             definition = get_trait_definition(self.parent, self.object_name)
         except DefinitionError as error:
             self.directive.warn(error.args[0])
         else:
             self.add_line(
-                '   :annotation: = {0}'.format(definition), '<autodoc>')
+                '   :annotation: = {0}'.format(definition), sourcename)

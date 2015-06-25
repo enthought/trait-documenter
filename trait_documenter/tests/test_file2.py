@@ -8,8 +8,9 @@ constant = 1
 
 trait_1 = Event
 
-if True:
-    pass
+if False:
+
+    trait_2 = List(Float)
 
 if True:
 

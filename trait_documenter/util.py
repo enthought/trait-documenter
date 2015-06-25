@@ -1,5 +1,6 @@
 import ast
 import inspect
+import collections
 from _ast import ClassDef, Assign, Name, If
 
 class DefinitionError(Exception):
@@ -28,7 +29,6 @@ def get_trait_definition(parent, trait_name):
     nodes = ast.parse(source)
 
     if not inspect.ismodule(parent):
-        # Get the HasTraits class definition
         for node in ast.iter_child_nodes(nodes):
             if isinstance(node, ClassDef):
                 parent_node = node
@@ -39,21 +39,23 @@ def get_trait_definition(parent, trait_name):
     else:
         parent_node = nodes
 
-    # Get the trait definition
-    for node in ast.iter_child_nodes(parent_node):
+    # Get the container node(s)
+    targets = collections.defaultdict(list)
+    for node in ast.walk(parent_node):
         if isinstance(node, Assign):
             target = trait_node(node, trait_name)
-        elif isinstance(node, If):
-            target, node = trait_node_in_children(node, trait_name)
-        else:
-            target = None
-        if target is not None:
-            break
-    else:
+            if target is not None:
+                targets[node.col_offset].append((node, target))
+
+    # keep the assignment with the smallest column offset
+    assignments = targets[min(targets)]
+    if len(assignments) == 0:
         message = 'Could not find trait definition of {0} in {1}'
         raise DefinitionError(message.format(trait_name, parent))
+    else:
+        # we always get the last assignment in the file
+        node, name = assignments[-1]
 
-    name = target
     endlineno = name.lineno
     for item in ast.walk(node):
         if hasattr(item, 'lineno'):
@@ -71,12 +73,3 @@ def trait_node(node, trait_name):
     target = node.targets[0]
     if isinstance(target, Name) and target.id == trait_name:
         return node
-
-
-def trait_node_in_children(parent, trait_name):
-    for node in ast.iter_child_nodes(parent):
-        if isinstance(node, Assign):
-            target = trait_node(node, trait_name)
-            if target is not None:
-                return target, node
-    return None, None
