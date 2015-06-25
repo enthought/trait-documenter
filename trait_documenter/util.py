@@ -1,6 +1,6 @@
 import ast
 import inspect
-from _ast import ClassDef, Assign
+from _ast import ClassDef, Assign, Name, If
 
 
 def get_trait_definition(parent, trait_name):
@@ -39,12 +39,17 @@ def get_trait_definition(parent, trait_name):
     # Get the trait definition
     for node in ast.iter_child_nodes(parent_node):
         if isinstance(node, Assign):
-            name = node.targets[0]
-            if name.id == trait_name:
-                break
+            target = trait_node(node, trait_name)
+        elif isinstance(node, If):
+            target, node = trait_node_in_children(node, trait_name)
+        else:
+            target = None
+        if target is not None:
+            break
     else:
         raise RuntimeError('Could not find trait definition')
 
+    name = target
     endlineno = name.lineno
     for item in ast.walk(node):
         if hasattr(item, 'lineno'):
@@ -56,3 +61,18 @@ def get_trait_definition(parent, trait_name):
     definition = ''.join(definition_lines)
     equal = definition.index('=')
     return definition[equal + 1:].lstrip()
+
+
+def trait_node(node, trait_name):
+    target = node.targets[0]
+    if isinstance(target, Name) and target.id == trait_name:
+        return node
+
+
+def trait_node_in_children(parent, trait_name):
+    for node in ast.iter_child_nodes(parent):
+        if isinstance(node, Assign):
+            target = trait_node(node, trait_name)
+            if target is not None:
+                return target, node
+    return None, None
