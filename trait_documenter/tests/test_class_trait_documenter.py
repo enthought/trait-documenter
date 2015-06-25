@@ -51,9 +51,9 @@ class TestClassTraitDocumenter(unittest.TestCase):
 
     def test_add_directive_header(self):
         # given
-        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
+        documenter = ClassTraitDocumenter(mock.Mock(), u'test')
         documenter.parent = Dummy
-        documenter.object_name = 'trait_2'
+        documenter.object_name = u'trait_2'
         documenter.modname = u'trait_documenter.tests.test_file'
         documenter.objpath = [u'Dummy', u'trait_2']
         documenter.add_line = mock.Mock()
