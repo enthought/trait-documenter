@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 import unittest
 
 import mock
-from sphinx.ext.autodoc import ModuleDocumenter
+from sphinx.ext.autodoc import ModuleDocumenter, SUPPRESS
 
 from trait_documenter.module_trait_documenter import ModuleTraitDocumenter
 from trait_documenter.tests import test_file
@@ -39,9 +39,10 @@ class TestModuleTraitDocumenter(unittest.TestCase):
         documenter.objpath = ['long_module_trait']
 
         # when
-        documenter.import_object()
+        result = documenter.import_object()
 
         # then
+        self.assertTrue(result)
         self.assertEqual(documenter.object_name, 'long_module_trait')
         self.assertTrue(documenter.object is not None)
         self.assertEqual(documenter.parent, test_file)
@@ -65,7 +66,54 @@ class TestModuleTraitDocumenter(unittest.TestCase):
             ('.. py:data:: long_module_trait', '<autodoc>'),
             ('   :noindex:', '<autodoc>'),
             ('   :module: trait_documenter.tests.test_file', '<autodoc>'),
-            ('   :annotation: = Range(low=0.2,high=34)', '<autodoc>')]  # noqa
+            ('   :annotation: = Range(low=0.2,high=34)', '<autodoc>')]
+        calls = documenter.add_line.call_args_list
+        for index, call in enumerate(calls):
+            self.assertEqual(tuple(call)[0], expected[index])
+
+    def test_add_directive_header_with_annotation(self):
+        # given
+        documenter = ModuleTraitDocumenter(mock.Mock(), 'test')
+        documenter.parent = test_file
+        documenter.options = mock.Mock(annotation='my annotation')
+        documenter.modname = 'trait_documenter.tests.test_file'
+        documenter.get_sourcename = mock.Mock(return_value='<autodoc>')
+        documenter.object_name = 'long_module_trait'
+        documenter.objpath = ['long_module_trait']
+        documenter.add_line = mock.Mock()
+
+        # when
+        documenter.add_directive_header('')
+
+        # then
+        expected = [
+            ('.. py:data:: long_module_trait', '<autodoc>'),
+            ('   :noindex:', '<autodoc>'),
+            ('   :module: trait_documenter.tests.test_file', '<autodoc>'),
+            ('   :annotation: my annotation', '<autodoc>')]
+        calls = documenter.add_line.call_args_list
+        for index, call in enumerate(calls):
+            self.assertEqual(tuple(call)[0], expected[index])
+
+    def test_add_directive_header_with_suppress(self):
+        # given
+        documenter = ModuleTraitDocumenter(mock.Mock(), 'test')
+        documenter.parent = test_file
+        documenter.options = mock.Mock(annotation=SUPPRESS)
+        documenter.modname = 'trait_documenter.tests.test_file'
+        documenter.get_sourcename = mock.Mock(return_value='<autodoc>')
+        documenter.object_name = 'long_module_trait'
+        documenter.objpath = ['long_module_trait']
+        documenter.add_line = mock.Mock()
+
+        # when
+        documenter.add_directive_header('')
+
+        # then
+        expected = [
+            ('.. py:data:: long_module_trait', '<autodoc>'),
+            ('   :noindex:', '<autodoc>'),
+            ('   :module: trait_documenter.tests.test_file', '<autodoc>')]
         calls = documenter.add_line.call_args_list
         for index, call in enumerate(calls):
             self.assertEqual(tuple(call)[0], expected[index])

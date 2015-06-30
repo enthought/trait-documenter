@@ -42,12 +42,27 @@ class TestClassTraitDocumenter(unittest.TestCase):
         documenter.objpath = ['Dummy', 'trait_1']
 
         # when
-        documenter.import_object()
+        result = documenter.import_object()
 
         # then
+        self.assertTrue(result)
         self.assertEqual(documenter.object_name, 'trait_1')
         self.assertTrue(documenter.object is None)
         self.assertEqual(documenter.parent, Dummy)
+
+    def test_import_object_with_error(self):
+        # given
+        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
+        documenter.modname = 'invalid456767'
+        documenter.objpath = ['Dummy', 'trait_1']
+
+        # when
+        result = documenter.import_object()
+
+        # then
+        self.assertFalse(result)
+        documenter.env.note_reread.assert_called()
+
 
     def test_add_directive_header(self):
         # given
