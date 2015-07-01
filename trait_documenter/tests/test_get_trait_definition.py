@@ -25,8 +25,10 @@ class TestGetTraitDefinition(unittest.TestCase):
         object_name = 'invalid_trait'
 
         # when/then
-        with self.assertRaises(DefinitionError):
-            get_trait_definition(parent, object_name)
+        self.assertRaises(
+            DefinitionError,
+            get_trait_definition,
+            parent, object_name)
 
     def test_get_multi_line_module_trait_definition(self):
         # given
@@ -55,8 +57,10 @@ class TestGetTraitDefinition(unittest.TestCase):
         object_name = 'trait_1'
 
         # when/then
-        with self.assertRaises(DefinitionError):
-            get_trait_definition(dummy_function, object_name)
+        self.assertRaises(
+            DefinitionError,
+            get_trait_definition,
+            dummy_function, object_name)
 
     def test_get_multi_line_class_trait_definition(self):
         # given
