@@ -1,7 +1,8 @@
 import ast
 import inspect
 import collections
-from _ast import ClassDef, Assign, Name, If
+from _ast import ClassDef, Assign, Name
+
 
 class DefinitionError(Exception):
     pass
@@ -47,12 +48,12 @@ def get_trait_definition(parent, trait_name):
             if target is not None:
                 targets[node.col_offset].append((node, target))
 
-    # keep the assignment with the smallest column offset
-    assignments = targets[min(targets)]
-    if len(assignments) == 0:
+    if len(targets) == 0:
         message = 'Could not find trait definition of {0} in {1}'
         raise DefinitionError(message.format(trait_name, parent))
     else:
+        # keep the assignment with the smallest column offset
+        assignments = targets[min(targets)]
         # we always get the last assignment in the file
         node, name = assignments[-1]
 

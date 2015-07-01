@@ -38,39 +38,77 @@ class TestClassTraitDocumenter(unittest.TestCase):
     def test_import_object(self):
         # given
         documenter = ClassTraitDocumenter(mock.Mock(), 'test')
-        documenter.modname = u'trait_documenter.tests.test_file'
-        documenter.objpath = [u'Dummy', u'trait_1']
+        documenter.modname = 'trait_documenter.tests.test_file'
+        documenter.objpath = ['Dummy', 'trait_1']
 
         # when
-        documenter.import_object()
+        result = documenter.import_object()
 
         # then
-        self.assertEqual(documenter.object_name, u'trait_1')
+        self.assertTrue(result)
+        self.assertEqual(documenter.object_name, 'trait_1')
         self.assertTrue(documenter.object is None)
         self.assertEqual(documenter.parent, Dummy)
 
+    def test_import_object_with_error(self):
+        # given
+        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
+        documenter.modname = 'invalid456767'
+        documenter.objpath = ['Dummy', 'trait_1']
+
+        # when
+        result = documenter.import_object()
+
+        # then
+        self.assertFalse(result)
+        documenter.env.note_reread.assert_called()
+
     def test_add_directive_header(self):
         # given
-        documenter = ClassTraitDocumenter(mock.Mock(), u'test')
+        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
         documenter.parent = Dummy
-        documenter.object_name = u'trait_2'
-        documenter.modname = u'trait_documenter.tests.test_file'
+        documenter.object_name = 'trait_2'
+        documenter.modname = 'trait_documenter.tests.test_file'
         documenter.get_sourcename = mock.Mock(return_value='<autodoc>')
-        documenter.objpath = [u'Dummy', u'trait_2']
+        documenter.objpath = ['Dummy', 'trait_2']
         documenter.add_line = mock.Mock()
 
         # when
         documenter.add_directive_header('')
 
         # then
+        self.assertEqual(documenter.directive.warn.call_args_list, [])
         expected = [
-            (u'.. py:attribute:: Dummy.trait_2', u'<autodoc>'),
-            (u'   :noindex:', u'<autodoc>'),
-            (u'   :module: trait_documenter.tests.test_file', u'<autodoc>'),
-            (u"   :annotation: = Property(Float,depends_on='trait_1')", u'<autodoc>')]  # noqa
+            ('.. py:attribute:: Dummy.trait_2', '<autodoc>'),
+            ('   :noindex:', '<autodoc>'),
+            ('   :module: trait_documenter.tests.test_file', '<autodoc>'),
+            ("   :annotation: = Property(Float,depends_on='trait_1')", '<autodoc>')]  # noqa
         calls = documenter.add_line.call_args_list
-        for index, call in enumerate(calls):
-            self.assertEqual(tuple(call)[0], expected[index])
+        for index, line in enumerate(expected):
+            self.assertEqual(calls[index][0], line)
+
+    def test_add_directive_header_with_warning(self):
+        # given
+        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
+        documenter.parent = Dummy
+        documenter.object_name = 'trait_very_invalid'
+        documenter.modname = 'trait_documenter.tests.test_file'
+        documenter.get_sourcename = mock.Mock(return_value='<autodoc>')
+        documenter.objpath = ['Dummy', 'trait_very_invalid']
+        documenter.add_line = mock.Mock()
+
+        # when
+        documenter.add_directive_header('')
+
+        # then
+        self.assertEqual(documenter.directive.warn.call_count, 1)
+        expected = [
+            ('.. py:attribute:: Dummy.trait_very_invalid', '<autodoc>'),
+            ('   :noindex:', '<autodoc>'),
+            ('   :module: trait_documenter.tests.test_file', '<autodoc>')]
+        calls = documenter.add_line.call_args_list
+        for index, line in enumerate(expected):
+            self.assertEqual(calls[index][0], line)
 
 
 if __name__ == '__main__':
