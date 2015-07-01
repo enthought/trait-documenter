@@ -63,7 +63,6 @@ class TestClassTraitDocumenter(unittest.TestCase):
         self.assertFalse(result)
         documenter.env.note_reread.assert_called()
 
-
     def test_add_directive_header(self):
         # given
         documenter = ClassTraitDocumenter(mock.Mock(), 'test')
@@ -78,14 +77,38 @@ class TestClassTraitDocumenter(unittest.TestCase):
         documenter.add_directive_header('')
 
         # then
+        self.assertEqual(documenter.directive.warn.call_args_list, [])
         expected = [
             ('.. py:attribute:: Dummy.trait_2', '<autodoc>'),
             ('   :noindex:', '<autodoc>'),
             ('   :module: trait_documenter.tests.test_file', '<autodoc>'),
             ("   :annotation: = Property(Float,depends_on='trait_1')", '<autodoc>')]  # noqa
         calls = documenter.add_line.call_args_list
-        for index, call in enumerate(calls):
-            self.assertEqual(tuple(call)[0], expected[index])
+        for index, line in enumerate(expected):
+            self.assertEqual(calls[index][0], line)
+
+    def test_add_directive_header_with_warning(self):
+        # given
+        documenter = ClassTraitDocumenter(mock.Mock(), 'test')
+        documenter.parent = Dummy
+        documenter.object_name = 'trait_very_invalid'
+        documenter.modname = 'trait_documenter.tests.test_file'
+        documenter.get_sourcename = mock.Mock(return_value='<autodoc>')
+        documenter.objpath = ['Dummy', 'trait_very_invalid']
+        documenter.add_line = mock.Mock()
+
+        # when
+        documenter.add_directive_header('')
+
+        # then
+        self.assertEqual(documenter.directive.warn.call_count, 1)
+        expected = [
+            ('.. py:attribute:: Dummy.trait_very_invalid', '<autodoc>'),
+            ('   :noindex:', '<autodoc>'),
+            ('   :module: trait_documenter.tests.test_file', '<autodoc>')]
+        calls = documenter.add_line.call_args_list
+        for index, line in enumerate(expected):
+            self.assertEqual(calls[index][0], line)
 
 
 if __name__ == '__main__':

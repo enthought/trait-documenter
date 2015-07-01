@@ -6,6 +6,8 @@ long_module_trait = Range(
     low=0.2,
     high=34)
 
+def dummy_function():
+    pass
 
 class Dummy(HasTraits):
 

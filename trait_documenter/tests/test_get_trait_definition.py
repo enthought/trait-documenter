@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 import unittest
 
 from trait_documenter.tests import test_file, test_file2
-from trait_documenter.tests.test_file import Dummy
-from trait_documenter.util import get_trait_definition
+from trait_documenter.tests.test_file import Dummy, dummy_function
+from trait_documenter.util import get_trait_definition, DefinitionError
 
 
 class TestGetTraitDefinition(unittest.TestCase):
@@ -18,6 +18,15 @@ class TestGetTraitDefinition(unittest.TestCase):
 
         # then
         self.assertEqual(definition, 'Float')
+
+    def test_get_inavlid_module_trait_definition(self):
+        # given
+        parent = test_file
+        object_name = 'invalid_trait'
+
+        # when/then
+        with self.assertRaises(DefinitionError):
+            get_trait_definition(parent, object_name)
 
     def test_get_multi_line_module_trait_definition(self):
         # given
@@ -40,6 +49,14 @@ class TestGetTraitDefinition(unittest.TestCase):
 
         # then
         self.assertEqual(definition, 'Float')
+
+    def test_get_trait_definition_from_function(self):
+
+        object_name = 'trait_1'
+
+        # when/then
+        with self.assertRaises(DefinitionError):
+            get_trait_definition(dummy_function, object_name)
 
     def test_get_multi_line_class_trait_definition(self):
         # given
