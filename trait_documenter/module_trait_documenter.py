@@ -62,7 +62,7 @@ class ModuleTraitDocumenter(ModuleLevelDocumenter):
         if hasattr(self, 'get_sourcename'):
             sourcename = self.get_sourcename()
         else:
-            sourcename = u'<autodoc>'
+            sourcename = '<autodoc>'
         if not self.options.annotation:
             try:
                 definition = get_trait_definition(
