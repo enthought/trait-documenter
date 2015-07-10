@@ -1,22 +1,10 @@
-.. Trait-Documenter documentation master file, created by
-   sphinx-quickstart on Fri Jul 03 19:47:11 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. Trait-Documenter documentation master file
 
-Welcome to Trait-Documenter's documentation!
-============================================
+.. include:: ../../README.rst
 
-Contents:
+.. include:: ../../CHANGES.txt
 
-.. toctree::
-   :maxdepth: 2
+License
+=======
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+.. include:: ../../LICENSE.txt
