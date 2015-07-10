@@ -17,7 +17,10 @@ properly rendered in sphinx.
 Installation
 ============
 
-The package requires *sphinx* and *traits* to function properly.
+Developments versions can be found in `github <https://github.com/enthought/trait-documenter.git>`_
+
+The package requires a recent version of  *sphinx* and *traits* to function properly.
+
 
 Usage
 =====
@@ -30,3 +33,24 @@ Add the trait-documenter to the extensions variable in your *conf.py*::
 
   Using the TraitDocumenter in conjunction with the TraitsDoc package
   is not advised.
+
+
+Example
+=======
+
+A class trait with a docstring::
+
+   from traits.api import HasTraits, Float
+
+   class MyClass(HasTraits):
+
+       #: A float number.
+       number = Float(2.0)
+
+
+Will be rendered as:
+
+.. py:attribute:: number
+   :annotation: = Float(2.0)
+
+   A float number.
