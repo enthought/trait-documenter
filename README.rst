@@ -30,3 +30,24 @@ Add the trait-documenter to the extensions variable in your *conf.py*::
 
   Using the TraitDocumenter in conjunction with the TraitsDoc package
   is not advised.
+
+
+Example
+=======
+
+A class trait with a docstring::
+
+   from traits.api import HasTraits, Float
+
+   class MyClass(HasTraits):
+
+       #: A float number.
+       number = Float(2.0)
+
+
+Will be rendered as:
+
+.. py:attribute:: number
+   :annotation: = Float(2.0)
+
+   A float number.
