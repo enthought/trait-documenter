@@ -82,7 +82,7 @@ class TestClassTraitDocumenter(unittest.TestCase):
             ('.. py:attribute:: Dummy.trait_2', '<autodoc>'),
             ('   :noindex:', '<autodoc>'),
             ('   :module: trait_documenter.tests.test_file', '<autodoc>'),
-            ("   :annotation: = Property(Float,depends_on='trait_1')", '<autodoc>')]  # noqa
+            ("   :annotation: = Property(Float, depends_on='trait_1')", '<autodoc>')]  # noqa
         calls = documenter.add_line.call_args_list
         for index, line in enumerate(expected):
             self.assertEqual(calls[index][0], line)
