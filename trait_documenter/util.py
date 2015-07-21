@@ -1,9 +1,31 @@
 import ast
+import sys
 import inspect
 import collections
 from _ast import ClassDef, Assign, Name
 
-from astor import to_source
+
+if sys.version_info[:2] == (2, 6):
+
+    from astor.codegen import SourceGenerator as Generator
+
+    class SourceGenerator(Generator):
+
+        def visit_Num(self, node):
+            s = format(node.n, '.12g')
+            if s.startswith('-'):
+                s = '(%s)' % s
+            self.write(s)
+
+    def to_source(node, indent_with=' ' * 4, add_line_information=False):
+        generator = SourceGenerator(indent_with, add_line_information)
+        generator.visit(node)
+        return ''.join(str(s) for s in generator.result)
+
+
+else:
+    from astor import to_source
+
 
 class DefinitionError(Exception):
     pass
