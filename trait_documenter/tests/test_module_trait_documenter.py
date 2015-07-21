@@ -66,7 +66,7 @@ class TestModuleTraitDocumenter(unittest.TestCase):
             ('.. py:data:: long_module_trait', '<autodoc>'),
             ('   :noindex:', '<autodoc>'),
             ('   :module: trait_documenter.tests.test_file', '<autodoc>'),
-            ('   :annotation: = Range(low=0.2,high=34)', '<autodoc>')]
+            ('   :annotation: = Range(low=0.2, high=34)', '<autodoc>')]
         calls = documenter.add_line.call_args_list
         for index, line in enumerate(expected):
             self.assertEqual(calls[index][0], line)

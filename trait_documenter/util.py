@@ -1,7 +1,30 @@
 import ast
+import sys
 import inspect
 import collections
 from _ast import ClassDef, Assign, Name
+
+
+if sys.version_info[:2] == (2, 6):
+
+    from astor.codegen import SourceGenerator as Generator
+
+    class SourceGenerator(Generator):
+
+        def visit_Num(self, node):
+            s = format(node.n, '.12g')
+            if s.startswith('-'):
+                s = '(%s)' % s
+            self.write(s)
+
+    def to_source(node, indent_with=' ' * 4, add_line_information=False):
+        generator = SourceGenerator(indent_with, add_line_information)
+        generator.visit(node)
+        return ''.join(str(s) for s in generator.result)
+
+
+else:
+    from astor import to_source
 
 
 class DefinitionError(Exception):
@@ -57,15 +80,7 @@ def get_trait_definition(parent, trait_name):
         # we always get the last assignment in the file
         node, name = assignments[-1]
 
-    endlineno = name.lineno
-    for item in ast.walk(node):
-        if hasattr(item, 'lineno'):
-            endlineno = max(endlineno, item.lineno)
-
-    definition_lines = [
-        line.strip()
-        for line in source.splitlines()[name.lineno-1:endlineno]]
-    definition = ''.join(definition_lines)
+    definition = to_source(node).strip()
     equal = definition.index('=')
     return definition[equal + 1:].lstrip()
 

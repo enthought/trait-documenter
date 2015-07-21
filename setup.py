@@ -108,6 +108,7 @@ if __name__ == "__main__":
         maintainer_email='info@enthought.com',
         url='https://github.com/enthought/trait-documenter',
         description='Autodoc extention for documenting traits',
+        install_requires=['sphinx', 'astor'],
         long_description=open('README.rst').read(),
         license="BSD",
         classifiers=[
