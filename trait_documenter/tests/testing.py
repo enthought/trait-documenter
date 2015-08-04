@@ -9,6 +9,10 @@ class expected_failure_when(object):
         self.condition = condition
 
     def __call__(self, function):
+        if is_python26():
+            import unittest2 as unittest
+        else:
+            import unittest
         if self.condition:
             return unittest.expectedFailure(function)
         else:
