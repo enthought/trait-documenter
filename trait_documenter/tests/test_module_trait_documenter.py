@@ -6,6 +6,7 @@ from sphinx.ext.autodoc import ModuleDocumenter, SUPPRESS
 
 from trait_documenter.module_trait_documenter import ModuleTraitDocumenter
 from trait_documenter.tests import test_file
+from trait_documenter.tests.testing import expected_failure_when, is_python_26
 from trait_documenter.tests.test_file import Dummy
 
 
@@ -47,6 +48,7 @@ class TestModuleTraitDocumenter(unittest.TestCase):
         self.assertTrue(documenter.object is not None)
         self.assertEqual(documenter.parent, test_file)
 
+    @expected_failure_when(is_python_26())
     def test_add_directive_header(self):
         # given
         documenter = ModuleTraitDocumenter(mock.Mock(), 'test')
@@ -66,7 +68,7 @@ class TestModuleTraitDocumenter(unittest.TestCase):
             ('.. py:data:: long_module_trait', '<autodoc>'),
             ('   :noindex:', '<autodoc>'),
             ('   :module: trait_documenter.tests.test_file', '<autodoc>'),
-            ('   :annotation: = Range(low=0.2,high=34)', '<autodoc>')]
+            ('   :annotation: = Range(low=0.2, high=34)', '<autodoc>')]
         calls = documenter.add_line.call_args_list
         for index, line in enumerate(expected):
             self.assertEqual(calls[index][0], line)
