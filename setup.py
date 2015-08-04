@@ -110,6 +110,7 @@ if __name__ == "__main__":
         description='Autodoc extention for documenting traits',
         long_description=open('README.rst').read(),
         license="BSD",
+        install_requires=['sphinx', 'astor', 'traits'],
         classifiers=[
             "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
