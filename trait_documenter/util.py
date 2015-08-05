@@ -3,6 +3,8 @@ import inspect
 import collections
 from _ast import ClassDef, Assign, Name
 
+import astor
+
 
 class DefinitionError(Exception):
     pass
@@ -57,17 +59,7 @@ def get_trait_definition(parent, trait_name):
         # we always get the last assignment in the file
         node, name = assignments[-1]
 
-    endlineno = name.lineno
-    for item in ast.walk(node):
-        if hasattr(item, 'lineno'):
-            endlineno = max(endlineno, item.lineno)
-
-    definition_lines = [
-        line.strip()
-        for line in source.splitlines()[name.lineno-1:endlineno]]
-    definition = ''.join(definition_lines)
-    equal = definition.index('=')
-    return definition[equal + 1:].lstrip()
+    return astor.to_source(node.value).strip()
 
 
 def trait_node(node, trait_name):

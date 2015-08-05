@@ -1,0 +1,46 @@
+from __future__ import unicode_literals
+import unittest
+
+import mock
+
+from trait_documenter.module_trait_documenter import (
+    ModuleTraitDocumenter)
+from trait_documenter.tests import test_file
+from trait_documenter.tests.test_file import Dummy
+
+
+class TestModuleTraitDocumenter(unittest.TestCase):
+
+    def test_can_document_member(self):
+        can_document_member = ModuleTraitDocumenter.can_document_member
+        parent = mock.Mock()
+
+        # modules
+        parent.object = test_file
+        self.assertFalse(can_document_member(Dummy, 'Dummy', False, parent))
+        self.assertFalse(can_document_member(
+            test_file.module_trait, 'module_trait', False, parent))
+        self.assertTrue(can_document_member(
+            test_file.module_trait, 'module_trait', True, parent))
+
+        parent.object = Dummy
+        self.assertFalse(
+            can_document_member(
+                Dummy.class_traits()['trait_1'], 'trait_1', True, parent))
+        self.assertFalse(
+            can_document_member(
+                Dummy.class_traits()['trait_1'], 'trait_1', False, parent))
+        self.assertFalse(
+            can_document_member(
+                Dummy.not_trait, 'not_trait', False, parent))
+
+    def test_module_level_trait_definition(self):
+        documenter = ModuleTraitDocumenter(mock.Mock(), 'test')
+        documenter.parent = test_file
+        documenter.object_name = 'module_trait'
+        definition = documenter.get_trait_definition()
+        self.assertEqual(definition, "Int")
+
+
+if __name__ == '__main__':
+    unittest.main()
