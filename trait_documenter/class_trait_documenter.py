@@ -48,8 +48,7 @@ class ClassTraitDocumenter(ClassLevelDocumenter):
             membername in obj.__class_traits__)
 
     def document_members(self, all_members=False):
-        # Trait attributes have no members """
-        pass
+        """ Trait attributes have no members """
 
     def add_content(self, more_content, no_docstring=False):
         # Never try to get a docstring from the trait object.
