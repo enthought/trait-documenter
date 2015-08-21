@@ -15,14 +15,14 @@ Trait-Documenter is an autodoc extension to allow trait definitions to be
 properly rendered in sphinx.
 
 Installation
-============
+------------
 
-Developments versions can be found in `github <https://github.com/enthought/trait-documenter.git>`_. 
+Developments versions can be found in `github <https://github.com/enthought/trait-documenter.git>`_.
 
 The package requires a recent version of  *sphinx*, *traits* and *astor* to function properly.
 
 Usage
-=====
+-----
 
 Add the trait-documenter to the extensions variable in your *conf.py*::
 
@@ -35,7 +35,7 @@ Add the trait-documenter to the extensions variable in your *conf.py*::
 
 
 Example
-=======
+-------
 
 A class trait with a docstring::
 
