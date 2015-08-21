@@ -17,7 +17,7 @@ properly rendered in sphinx.
 Installation
 ------------
 
-Developments versions can be found at https://github.com/enthought/trait-documenter.
+Development versions can be found at https://github.com/enthought/trait-documenter.
 
 The package requires a recent version of  *sphinx*, *traits* and *astor* to function properly.
 
