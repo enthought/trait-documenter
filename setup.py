@@ -68,8 +68,8 @@ if not is_released:
     elif os.path.exists('trait_documenter/_version.py'):
         # must be a source distribution, use existing version file
         try:
-            from traits_documenter._version import git_revision as git_rev
-            from traits_documenter._version import full_version as full_v
+            from trait_documenter._version import git_revision as git_rev
+            from trait_documenter._version import full_version as full_v
         except ImportError:
             raise ImportError(
                 "Unable to import git_revision. Try removing "
