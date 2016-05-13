@@ -8,6 +8,9 @@ python:
 env:
   - SPHINX="sphinx==1.2.3"
   - SPHINX="sphinx"
+matrix:
+ allow_failures:
+  - python: "3.5"
 before_install:
   - pip install traits
   - pip install $SPHINX
