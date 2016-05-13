@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+Release 1.0.2
+-------------
+
+* Correct github link in Readme.rst
+* Fix error in setup.py that prevented installation
+
+
+Release 1.0.1
+-------------
+
+* Clean rst in Readme file.
+
 Release 1.0.0
 -------------
 
