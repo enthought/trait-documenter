@@ -3,4 +3,4 @@ mock
 unittest2 ; python_version < '2.7'
 stevedore == 1.10.0 ; python_version < '2.7'
 haas ; python_version > '2.6'
-hass == 0.6.2 ; python_version < '2.7'
+haas == 0.6.2 ; python_version < '2.7'
