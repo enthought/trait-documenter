@@ -1,4 +1,5 @@
 coverage
 mock
 unittest2 ; python_version < '2.7'
+stevedore == 1.10.0 ; python_version < '2.7'
 haas
