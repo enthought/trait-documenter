@@ -1,6 +1,6 @@
 from traits.api import Event, Float, Int, List
 
-from . import test_file
+from trait_documenter.tests import test_file
 
 test_file.Event = Event
 
