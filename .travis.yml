@@ -1,23 +1,42 @@
 language: python
 sudo: false
+
+branches:
+  only:
+    master
+
 python:
   - "2.6"
   - "2.7"
   - "3.4"
   - "3.5"
+
 env:
   - SPHINX="sphinx==1.2.3"
   - SPHINX="sphinx"
+
 matrix:
  allow_failures:
   - python: "3.5"
+
+addons:
+  apt:
+    packages:
+    - ccache
+
+cache:
+  pip: true
+  directories:
+    - $HOME/.ccache
+
 before_install:
-  - pip install traits
-  - pip install $SPHINX
-  - pip install codecov
+  - ccache -s
+  - export PATH=/usr/lib/ccache:${PATH}
+  - pip install --upgrade pip
+  - pip install traits $SPHINX codecov
   - pip install -r test-requirements.txt
 install:
-  - python setup.py develop
+  - pip install -e .
 script:
   - coverage run -m haas
 after_success:
