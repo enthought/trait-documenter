@@ -1,8 +1,8 @@
 from __future__ import unicode_literals
-import unittest
 
 from trait_documenter.tests import test_file, test_file2
-from trait_documenter.tests.testing import expected_failure_when, is_python_26
+from trait_documenter.tests.testing import (
+    expected_failure_when, is_python_26, unittest)
 from trait_documenter.tests.test_file import Dummy, dummy_function
 from trait_documenter.util import get_trait_definition, DefinitionError
 

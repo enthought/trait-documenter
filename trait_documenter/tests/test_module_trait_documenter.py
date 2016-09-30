@@ -1,12 +1,12 @@
 from __future__ import unicode_literals
-import unittest
 
 import mock
 from sphinx.ext.autodoc import ModuleDocumenter, SUPPRESS
 
 from trait_documenter.module_trait_documenter import ModuleTraitDocumenter
 from trait_documenter.tests import test_file
-from trait_documenter.tests.testing import expected_failure_when, is_python_26
+from trait_documenter.tests.testing import (
+    expected_failure_when, is_python_26, unittest)
 from trait_documenter.tests.test_file import Dummy
 
 
