@@ -1,6 +1,7 @@
 import os
 import re
 import subprocess
+import sys
 
 from setuptools import setup, find_packages
 
@@ -96,6 +97,16 @@ if not is_released:
 
 
 if __name__ == "__main__":
+
+    install_requires = ['sphinx', 'traits']
+    py35_requires = ['astor>0.5']
+    py_requires = ['astor']
+
+    if sys.version_info < (3, 5):
+        install_requires += py_requires
+    else:
+        install_requires = py35_requires
+
     write_version_py()
     from trait_documenter import __version__
 
@@ -110,21 +121,23 @@ if __name__ == "__main__":
         description='Autodoc extention for documenting traits',
         long_description=open('README.rst').read(),
         license="BSD",
-        install_requires=['sphinx', 'astor', 'traits'],
+        install_requires=install_requires,
         classifiers=[
             "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.2",
             "Programming Language :: Python :: 3.3",
             "Programming Language :: Python :: 3.4",
+            "Programming Language :: Python :: 3.5",
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Developers",
             "License :: OSI Approved :: BSD License",
             "Operating System :: OS Independent",
             "Programming Language :: Python",
             "Framework :: Sphinx :: Extension",
-            "Topic :: Documentation :: Sphinx",
-        ],
+            "Topic :: Documentation :: Sphinx"],
         test_suite='trait_documenter.tests',
         packages=find_packages(),
-        use_2to3=True)
+        use_2to3=True,
+        extras_require={
+            ':python_version=="3.5"': py35_requires})
