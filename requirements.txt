@@ -1,2 +1,3 @@
 traits
 sphinx
+git+https://github.com/berkerpeksag/astor.git#astor
