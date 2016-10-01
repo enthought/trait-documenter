@@ -15,10 +15,6 @@ env:
   - SPHINX="sphinx==1.2.3"
   - SPHINX="sphinx"
 
-matrix:
- allow_failures:
-  - python: "3.5"
-
 addons:
   apt:
     packages:
