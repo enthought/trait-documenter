@@ -47,9 +47,9 @@ A class trait with a docstring::
        number = Float(2.0)
 
 
-Will be rendered as:
+Will be rendered as::
 
-.. py:attribute:: number
-   :annotation: = Float(2.0)
+   .. py:attribute:: number
+      :annotation: = Float(2.0)
 
-   A float number.
+      A float number.
