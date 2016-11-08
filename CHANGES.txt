@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Release 1.1.0
+-------------
+
+* Support Python 3.5 (needs astor > 0.5)
+* Correct issues with test on python 2.6
+
 Release 1.0.2
 -------------
 
