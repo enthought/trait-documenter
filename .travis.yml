@@ -6,19 +6,16 @@ branches:
     master
 
 python:
-  - "2.6"
   - "2.7"
-  - "3.4"
   - "3.5"
+  - "3.6"
 
 env:
-  - SPHINX="sphinx==1.2.3"
+  - SPHINX="sphinx==1.5"
+  - SPHINX="sphinx==1.4"
+  - SPHINX="sphinx==1.3"
+  - SPHINX="sphinx==1.2"
   - SPHINX="sphinx"
-
-matrix:
-  exclude:
-  - python: "2.6"
-    env: SPHINX="sphinx"
 
 addons:
   apt:
