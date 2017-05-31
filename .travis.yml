@@ -37,7 +37,7 @@ script:
   - coverage run -m haas
   - pip install sphinx==1.5.*
   - coverage run -m haas
-  - pip install sphinx
+  - pip install --upgrade sphinx
   - coverage run -m haas
 after_success:
   - pip install codecov
