@@ -1,3 +1,4 @@
 traits
 sphinx
-astor>=0.5
+astor ; python_version < '3'
+git+https://github.com/berkerpeksag/astor.git#astor ; python_version > '2.7'
