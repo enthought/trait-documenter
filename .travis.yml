@@ -29,19 +29,20 @@ before_install:
   - pip install -r test-requirements.txt
 install:
   - pip install -e .
+  - alias run-tests=coverage run -p -m haas trait_documenter
 script:
   - pip install sphinx==1.2.*
-  - coverage run -p haas trait_documenter
+  - run-tests
   - pip install sphinx==1.3.*
-  - coverage run -p haas trait_documenter
+  - run-tests
   - pip install sphinx==1.4.*
-  - coverage run -p haas trait_documenter
+  - run-tests
   - pip install sphinx==1.5.*
-  - coverage run -p haas trait_documenter
+  - run-tests
   - pip install sphinx==1.6.*
-  - coverage run -p haas trait_documenter
+  - run-tests
   - pip install --upgrade sphinx
-  - coverage run -p haas trait_documenter
+  - run-tests
 after_success:
   - coverage combine
   - pip install codecov
