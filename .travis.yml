@@ -29,7 +29,7 @@ before_install:
   - pip install -r test-requirements.txt
 install:
   - pip install -e .
-  - alias run-tests=coverage run -p -m haas trait_documenter
+  - alias run-tests="coverage run -p -m haas trait_documenter"
 script:
   - pip install sphinx==1.2.*
   - run-tests
