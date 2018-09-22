@@ -39,6 +39,8 @@ script:
   - coverage run -p -m haas trait_documenter
   - pip install sphinx==1.6.*
   - coverage run -p -m haas trait_documenter
+  - pip install sphinx==1.7.*
+  - coverage run -p -m haas trait_documenter
   - pip install --upgrade sphinx
   - coverage run -p -m haas trait_documenter
 after_success:
