@@ -16,7 +16,7 @@ properly rendered in sphinx.
 
 .. note::
    This project is a work in progress. For production use, use the existing
-   ``traits.util.trait_documenter``Sphinx extension (which is distributed
+   ``traits.util.trait_documenter`` Sphinx extension (which is distributed
    as part of Traits) instead.
 
 
